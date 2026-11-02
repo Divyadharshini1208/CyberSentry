@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: sentinelx-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - SENTINELX_API_KEY=sentinelx-client-dev-key
+      - SECRET_KEY=sentinelx-production-secret-key-replace-with-secure-value
+      - DATABASE_URL=mysql+aiomysql://sentinelx_user:sentinelx_pass@mysql:3306/sentinelx_db
+      - DB_POOL_SIZE=10
+      - DB_MAX_OVERFLOW=20
+      - RATE_LIMIT_PER_MINUTE=120
+      - THREAT_INTEL_CACHE_TTL_SECONDS=3600
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - sentinelx-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: sentinelx-mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secure_password
+      MYSQL_DATABASE: sentinelx_db
+      MYSQL_USER: sentinelx_user
+      MYSQL_PASSWORD: sentinelx_pass
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sentinelx_user", "-psentinelx_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sentinelx-network
+
+volumes:
+  mysql-data:
+
+networks:
+  sentinelx-network:
+    driver: bridge

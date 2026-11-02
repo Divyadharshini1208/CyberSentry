@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentry – Scan History & Security Telemetry</title>
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+  <div class="history-container">
+    <!-- Top Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 6V11.5C3 17.5 6.8 22.3 12 23.8C17.2 22.3 21 17.5 21 11.5V6L12 2Z" fill="#0B132B" stroke="#0070F3" stroke-width="1.8"/>
+            <path d="M9 12L15 12M12 9L12 15" stroke="#00E5FF" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>CyberSentry History</h1>
+          <p class="subtitle">Local Telemetry & Detection Audit Trail</p>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a href="../settings/settings.html" class="nav-link">Settings</a>
+      </div>
+    </header>
+
+    <!-- Stat Summary Bar -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total Scans Logged</span>
+        <span id="stat-total-scans" class="stat-value">0</span>
+      </div>
+      <div class="stat-card threat">
+        <span class="stat-label">Threats Flagged (High & Critical)</span>
+        <span id="stat-threat-scans" class="stat-value">0</span>
+      </div>
+      <div class="stat-card safe">
+        <span class="stat-label">Low Risk Verified</span>
+        <span id="stat-safe-scans" class="stat-value">0</span>
+      </div>
+    </section>
+
+    <!-- Toolbar Filters -->
+    <section class="toolbar">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="input-search" placeholder="Search by domain, URL, or indicator..." autocomplete="off">
+      </div>
+
+      <div class="filter-group">
+        <select id="select-category-filter">
+          <option value="ALL">All Risk Tiers</option>
+          <option value="Critical Risk">Critical Risk (75-100)</option>
+          <option value="High Risk">High Risk (50-74)</option>
+          <option value="Moderate Risk">Moderate Risk (25-49)</option>
+          <option value="Low Risk">Low Risk (0-24)</option>
+        </select>
+
+        <select id="select-sort-order">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="score-desc">Highest Risk Score</option>
+        </select>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-export-csv" class="btn secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export CSV
+        </button>
+        <button id="btn-clear-history" class="btn danger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          Clear History
+        </button>
+      </div>
+    </section>
+
+    <!-- History Log Table -->
+    <main class="table-container">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Domain & URL</th>
+            <th>Risk Score</th>
+            <th>Category</th>
+            <th>Key Detection Indicators</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>No Scan Records Found</h3>
+        <p>No browsing events match your filter criteria or history is currently empty.</p>
+      </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h3>Clear Scan History</h3>
+        <p>Are you sure you want to delete all stored security scan logs? This action cannot be reversed.</p>
+        <div class="modal-actions">
+          <button id="btn-cancel-clear" class="btn secondary">Cancel</button>
+          <button id="btn-confirm-clear" class="btn danger">Yes, Clear All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Record Inspection Modal -->
+    <div id="inspect-modal" class="modal-overlay hidden">
+      <div class="modal-card inspect-card">
+        <div class="modal-header">
+          <h3 id="inspect-domain-title">Event Telemetry</h3>
+          <button id="btn-close-inspect" class="close-x">&times;</button>
+        </div>
+        <div class="modal-body" id="inspect-modal-body">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div id="history-toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="history.js"></script>
+</body>
+</html>
+

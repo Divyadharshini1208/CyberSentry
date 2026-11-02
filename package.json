@@ -1,0 +1,20 @@
+{
+  "name": "sentinelx-extension",
+  "version": "1.0.0",
+  "description": "SentinelX – Agentic Cyber Defense Platform Chrome Extension",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run-tests.mjs",
+    "test:backend": "python -m pytest -v",
+    "test:all": "node tests/run-tests.mjs && python -m pytest -v"
+  },
+  "keywords": [
+    "cybersecurity",
+    "browser-extension",
+    "phishing-detection",
+    "threat-intelligence"
+  ],
+  "author": "SentinelX Cyber Defense Team",
+  "license": "Apache-2.0"
+}
+

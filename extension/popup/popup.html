@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentry Defense</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="sentinelx-app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 6V11.5C3 17.5 6.8 22.3 12 23.8C17.2 22.3 21 17.5 21 11.5V6L12 2Z" fill="#0B132B" stroke="#0070F3" stroke-width="1.8"/>
+            <path d="M9 12L15 12M12 9L12 15" stroke="#00E5FF" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CyberSentry</span>
+          <span class="brand-subtitle">Agentic Cyber Defense</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="cloud-status-badge" class="cloud-badge offline" title="Backend Cloud Connectivity">Local Mode</span>
+        <span id="protection-status-badge" class="status-badge active" title="Protection status">Active</span>
+        <button id="btn-open-history" class="icon-btn" title="Scan History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </button>
+        <button id="btn-open-settings" class="icon-btn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button id="tab-btn-active" class="tab-btn active">Active Tab</button>
+      <button id="tab-btn-manual" class="tab-btn">Manual Scan</button>
+    </div>
+
+    <!-- Active Tab Scan View -->
+    <main id="active-scan-view" class="view-panel active">
+      <!-- Domain & Protocol Card -->
+      <div class="target-card">
+        <div class="target-info">
+          <span id="domain-protocol-badge" class="protocol-badge https">HTTPS</span>
+          <span id="current-domain-text" class="domain-title" title="Target Domain">Analyzing...</span>
+        </div>
+        <div class="target-actions">
+          <button id="btn-quick-allow" class="text-action-btn" title="Add domain to allowlist">Trust</button>
+          <button id="btn-quick-block" class="text-action-btn danger" title="Add domain to blocklist">Block</button>
+        </div>
+      </div>
+
+      <!-- Risk Gauge Section -->
+      <section class="risk-card">
+        <div class="gauge-container">
+          <svg class="risk-gauge" viewBox="0 0 100 100">
+            <circle class="gauge-bg" cx="50" cy="50" r="42"/>
+            <circle id="gauge-fill" class="gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"/>
+          </svg>
+          <div class="gauge-center">
+            <span id="risk-score-value" class="risk-number">0</span>
+            <span class="risk-denom">/100</span>
+          </div>
+        </div>
+
+        <div class="risk-verdict">
+          <div id="risk-category-badge" class="category-badge low">Low Risk</div>
+          <p id="risk-summary-text" class="summary-text">Analyzing site security characteristics...</p>
+        </div>
+      </section>
+
+      <!-- Recommendation Card -->
+      <div class="recommendation-card">
+        <div class="rec-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="rec-content">
+          <span class="rec-label">Recommended Action</span>
+          <p id="recommendation-text" class="rec-text">Evaluating threat level...</p>
+        </div>
+      </div>
+
+      <!-- Detected Security Indicators -->
+      <section class="indicators-section">
+        <div class="section-header">
+          <span class="section-title">Security Indicators</span>
+          <span id="indicators-count-badge" class="count-badge">0</span>
+        </div>
+        <div id="indicators-list" class="indicators-list">
+          <!-- Dynamically populated or empty state -->
+        </div>
+      </section>
+
+      <!-- Primary Action Buttons -->
+      <div class="action-bar">
+        <button id="btn-scan-now" class="primary-btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          <span>Scan Now</span>
+        </button>
+        <button id="btn-view-details" class="secondary-btn">
+          <span>View Details</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- Manual URL Scanner View -->
+    <section id="manual-scan-view" class="view-panel">
+      <div class="manual-card">
+        <label for="manual-url-input" class="input-label">Inspect External URL</label>
+        <div class="input-group">
+          <input type="text" id="manual-url-input" placeholder="https://example.com/path" spellcheck="false" autocomplete="off">
+          <button id="btn-run-manual-scan" class="input-btn">Scan</button>
+        </div>
+        <span class="input-hint">Analyze suspect URLs, email links, or shortlinks before opening.</span>
+      </div>
+
+      <div id="manual-scan-result" class="manual-result-container hidden">
+        <!-- Result populated dynamically -->
+      </div>
+    </section>
+
+    <!-- Detailed Scan Modal / Drawer -->
+    <div id="details-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Detailed Security Inspection</h3>
+          <button id="btn-close-modal" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="detail-row">
+            <span class="detail-label">Scanned URL</span>
+            <div class="url-copy-box">
+              <span id="modal-full-url" class="detail-value mono url-truncate"></span>
+              <button id="btn-copy-url" class="mini-copy-btn" title="Copy URL">Copy</button>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Root Domain</span>
+              <span id="modal-root-domain" class="detail-value mono">-</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Protocol</span>
+              <span id="modal-protocol" class="detail-value">-</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Subdomains</span>
+              <span id="modal-subdomains" class="detail-value">-</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Confidence</span>
+              <span id="modal-confidence" class="detail-value">-</span>
+            </div>
+          </div>
+
+          <div class="modal-subheading">Risk Score Contribution Breakdown</div>
+          <div class="breakdown-bars">
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Protocol & Transport</span>
+                <span id="breakdown-protocol-val">0</span>
+              </div>
+              <div class="bar-track"><div id="bar-protocol" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>URL Structure & Params</span>
+                <span id="breakdown-url-val">0</span>
+              </div>
+              <div class="bar-track"><div id="bar-url" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Domain Intelligence</span>
+                <span id="breakdown-domain-val">0</span>
+              </div>
+              <div class="bar-track"><div id="bar-domain" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Phishing & DOM Signals</span>
+                <span id="breakdown-phishing-val">0</span>
+              </div>
+              <div class="bar-track"><div id="bar-phishing" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Navigation & Redirects</span>
+                <span id="breakdown-redirect-val">0</span>
+              </div>
+              <div class="bar-track"><div id="bar-redirect" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+
+          <div class="modal-subheading">Redirect Chain Hops</div>
+          <div id="modal-redirect-hops" class="hops-list">
+            <div class="no-hops-text">Direct navigation (No intermediate redirects)</div>
+          </div>
+
+          <div class="modal-subheading">Intelligence Engine Info</div>
+          <div class="intel-info-box">
+            <div class="intel-row">
+              <span>Threat Intel Source:</span>
+              <span id="modal-intel-source">Local Deterministic Engine</span>
+            </div>
+            <div class="intel-row">
+              <span>Cloud Enrichment:</span>
+              <span id="modal-cloud-status">Local Autonomous Mode</span>
+            </div>
+            <div class="intel-row">
+              <span>ML Classifier:</span>
+              <span id="modal-ml-status">Standby</span>
+            </div>
+            <div class="intel-row">
+              <span>Timestamp:</span>
+              <span id="modal-timestamp">-</span>
+            </div>
+          </div>
+
+          <button id="btn-deep-investigate" class="primary-btn" style="margin-top: 10px; width: 100%;">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L3 6V11.5C3 17.5 6.8 22.3 12 23.8C17.2 22.3 21 17.5 21 11.5V6L12 2Z"/>
+              <path d="M9 12L15 12M12 9L12 15"/>
+            </svg>
+            <span>Run Multi-Agent Investigation</span>
+          </button>
+          <div id="investigation-result-card" class="intel-info-box hidden" style="margin-top: 8px;">
+            <div style="font-weight: 700; color: #00e5ff; margin-bottom: 4px;">Investigation Findings</div>
+            <div id="investigation-summary-text" style="font-size: 11px; color: #e2e8f0; line-height: 1.4;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="popup-toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
+

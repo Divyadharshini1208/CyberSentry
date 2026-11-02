@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentry – Settings & Security Policies</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-container">
+    <!-- Top Header -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 6V11.5C3 17.5 6.8 22.3 12 23.8C17.2 22.3 21 17.5 21 11.5V6L12 2Z" fill="#0B132B" stroke="#0070F3" stroke-width="1.8"/>
+            <path d="M9 12L15 12M12 9L12 15" stroke="#00E5FF" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>CyberSentry Settings</h1>
+          <p class="subtitle">Platform Policies & Security Configuration</p>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a href="../history/history.html" class="nav-link">Scan History</a>
+      </div>
+    </header>
+
+    <main class="settings-grid">
+      <!-- Left Column: Controls & Policies -->
+      <div class="settings-main">
+        <!-- Core Protection Settings -->
+        <section class="settings-section">
+          <h2 class="section-title">Core Protection Engines</h2>
+          
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Master Real-Time Protection</span>
+              <p class="setting-desc">Enables active URL scanning, domain risk scoring, and threat detection across all visited tabs.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-protection" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Phishing & Brand Impersonation Detection</span>
+              <p class="setting-desc">Analyzes lookalike domains, typosquatting variants, deceptive login endpoints, and DOM form targets.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-phishing" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Automatic Navigation Scanning</span>
+              <p class="setting-desc">Automatically inspects pages on navigation commit and logs events to local scan history.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-autoscan" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Dangerous Download Monitoring</span>
+              <p class="setting-desc">Inspects initiated downloads for deceptive double extensions (.pdf.exe), high-risk executables, and unencrypted HTTP transport.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-downloads" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Notification Settings -->
+        <section class="settings-section">
+          <h2 class="section-title">Alerts & Notifications</h2>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Desktop Security Alerts</span>
+              <p class="setting-desc">Deliver native system notifications when high or critical security risks are encountered.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-notifications" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Notification Severity Threshold</span>
+              <p class="setting-desc">Choose the minimum risk severity level required to trigger desktop notifications.</p>
+            </div>
+            <select id="select-notify-threshold" class="styled-select">
+              <option value="high">High & Critical Only (Score 50+)</option>
+              <option value="all">All Warnings (Score 25+)</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Backend & Threat Intelligence Connectivity -->
+        <section class="settings-section">
+          <h2 class="section-title">Backend & Cloud Intelligence Integration</h2>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Cloud Threat Enrichment</span>
+              <p class="setting-desc">Queries the CyberSentry FastAPI backend for VirusTotal, AlienVault OTX, and multi-agent investigations.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-enrichment" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Telemetry Ingestion</span>
+              <p class="setting-desc">Sends sanitized security events (no credentials or cookies) to backend telemetry store.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-telemetry" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">FastAPI Backend Endpoint</span>
+              <p class="setting-desc">Base URL of the CyberSentry defense server.</p>
+            </div>
+            <input type="text" id="input-backend-url" class="styled-text-input" placeholder="http://127.0.0.1:8000" spellcheck="false">
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Client API Key</span>
+              <p class="setting-desc">Header key used for authenticated backend communication.</p>
+            </div>
+            <input type="password" id="input-backend-key" class="styled-text-input" placeholder="API Key" spellcheck="false">
+          </div>
+        </section>
+
+        <!-- Allowlist Policy -->
+        <section class="settings-section">
+          <div class="section-header-row">
+            <div>
+              <h2 class="section-title">Trusted Domains (Allowlist)</h2>
+              <p class="setting-desc">Domains added here are exempted from heuristic risk scoring (Score 0, Low Risk).</p>
+            </div>
+            <span id="allowlist-count-badge" class="count-pill">0 domains</span>
+          </div>
+
+          <div class="input-action-row">
+            <input type="text" id="input-new-allow" placeholder="e.g. internal.company.com" spellcheck="false" autocomplete="off">
+            <button id="btn-add-allow" class="btn primary">Add Domain</button>
+          </div>
+
+          <div id="allowlist-container" class="domain-tag-list">
+            <!-- Allowlisted domain pills -->
+          </div>
+        </section>
+
+        <!-- Blocklist Policy -->
+        <section class="settings-section">
+          <div class="section-header-row">
+            <div>
+              <h2 class="section-title">Restricted Domains (Blocklist)</h2>
+              <p class="setting-desc">Domains added here are immediately flagged as Critical Risk (Score 100) and blocked.</p>
+            </div>
+            <span id="blocklist-count-badge" class="count-pill">0 domains</span>
+          </div>
+
+          <div class="input-action-row">
+            <input type="text" id="input-new-block" placeholder="e.g. untrusted-portal.net" spellcheck="false" autocomplete="off">
+            <button id="btn-add-block" class="btn danger">Block Domain</button>
+          </div>
+
+          <div id="blocklist-container" class="domain-tag-list">
+            <!-- Blocklisted domain pills -->
+          </div>
+        </section>
+
+        <!-- Data & Policy Actions -->
+        <section class="settings-section">
+          <h2 class="section-title">Maintenance & Data Reset</h2>
+          <div class="maintenance-buttons">
+            <button id="btn-clear-history-settings" class="btn secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              Clear Scan History
+            </button>
+            <button id="btn-reset-defaults" class="btn danger-outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2.5 2v6h6M21.5 22v-6h-6"/>
+                <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.3"/>
+              </svg>
+              Reset to Factory Defaults
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: About, Privacy & Architecture -->
+      <aside class="settings-sidebar">
+        <!-- About Box -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <span class="info-title">About CyberSentry</span>
+            <span class="version-tag">v1.0.0</span>
+          </div>
+          <p class="info-text">
+            <strong>CyberSentry – Agentic Cyber Defense Platform</strong> is a next-generation browser security extension designed to proactively identify web threats, phishing infrastructure, deceptive redirects, and malicious payload downloads.
+          </p>
+          <div class="arch-meta">
+            <div class="meta-item">
+              <span class="meta-label">Architecture</span>
+              <span class="meta-val">Chrome Manifest V3</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Detection Engine</span>
+              <span class="meta-val">Deterministic Heuristic Core V1</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Backend Roadmap</span>
+              <span class="meta-val">FastAPI + AI Multi-Agent Mesh</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Box -->
+        <div class="info-card privacy-card">
+          <div class="info-card-header">
+            <span class="info-title">Zero-Telemetry Privacy</span>
+            <svg class="privacy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <ul class="privacy-list">
+            <li><strong>Zero Credential Access:</strong> Passwords, form inputs, and keystrokes are never read or captured.</li>
+            <li><strong>Local Computation:</strong> All heuristic analysis and risk scoring runs locally in your browser sandbox.</li>
+            <li><strong>No External Tracking:</strong> Browsing history is not sent to external servers or third parties.</li>
+            <li><strong>Minimum Permissions:</strong> Only APIs essential for active security defense are requested.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="settings-confirm-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h3 id="confirm-modal-title">Confirm Action</h3>
+        <p id="confirm-modal-msg">Are you sure you want to proceed?</p>
+        <div class="modal-actions">
+          <button id="btn-modal-cancel" class="btn secondary">Cancel</button>
+          <button id="btn-modal-confirm" class="btn danger">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings-toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="settings.js"></script>
+</body>
+</html>
+
